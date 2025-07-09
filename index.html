@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Majstr – AI asistent pro řemeslníky</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        /* Header/Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-feature-icon {
+            font-size: 1.2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn.primary {
+            background: #fff;
+            color: #2563eb;
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-animation {
+            position: absolute;
+            right: 10%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .phone-mockup {
+            width: 280px;
+            height: 500px;
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: #25d366;
+            border-radius: 20px;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            animation: messageSlide 2s ease-in-out infinite;
+        }
+
+        .chat-message.incoming {
+            text-align: left;
+        }
+
+        .chat-message.outgoing {
+            text-align: right;
+            animation-delay: 1s;
+        }
+
+        .message-text {
+            display: inline-block;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-message.outgoing .message-text {
+            background: #dcf8c6;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+
+        @keyframes messageSlide {
+            0%, 100% { opacity: 0.7; transform: translateX(0); }
+            50% { opacity: 1; transform: translateX(5px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 0;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .benefits-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .benefits-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .benefits-list {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .benefits-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .benefits-list li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .benefits-image {
+            text-align: center;
+        }
+
+        .demo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .demo-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .demo-text {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .demo-arrow {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Pricing Toggle */
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .toggle-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .discount-badge {
+            background: #10b981;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .trial-badge {
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .price-yearly {
+            display: none;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 0;
+            background: #f8f9fa;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card.featured {
+            border: 3px solid #667eea;
+            transform: scale(1.05);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            color: #666;
+        }
+
+        .pricing-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .pricing-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 0;
+            background: #2d3748;
+            color: white;
+        }
+
+        .contact-content {
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 4rem 0;
+            }
+
+            .hero-animation {
+                position: static;
+                transform: none;
+                margin-top: 2rem;
+            }
+
+            .phone-mockup {
+                width: 200px;
+                height: 360px;
+                padding: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .hero-features {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .benefits-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .features-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .demo-container {
+                padding: 1rem;
+            }
+
+            .demo-step {
+                max-width: 100%;
+            }
+        }
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card,
+        .pricing-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Majstr.cz</div>
+            <ul class="nav-links">
+                <li><a href="#features">Funkce</a></li>
+                <li><a href="#benefits">Výhody</a></li>
+                <li><a href="#pricing">Ceník</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🤖 AI asistent pro řemeslníky</div>
+            <h1>Majstr – váš digitální asistent do kapsy</h1>
+            <p>Faktury, nabídky, smlouvy a nákupní seznamy. Stačí poslat zprávu nebo nahrát hlasovku a za 2 minuty máte hotovo!</p>
+            <div class="hero-features">
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">📱</span>
+                    <span>Telegram bot</span>
+                </div>
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">⚡</span>
+                    <span>2 minuty</span>
+                </div>
+                <div class="hero-feature">
+                    <span class="hero-feature-icon">🎯</span>
+                    <span>Automaticky zákazníkovi</span>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn primary">Vyzkoušet 30 dní zdarma</a>
+                <a href="#demo" class="btn secondary">Ukázka</a>
+            </div>
+        </div>
+        <div class="hero-animation">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="chat-message incoming">
+                        <div class="message-text">🎙️ Potřebuju fakturu pro Novák s.r.o., IČO 12345678, za opravu kotle 5000 Kč</div>
+                        <div class="message-time">14:30</div>
+                    </div>
+                    <div class="chat-message outgoing">
+                        <div class="message-text">✅ Faktura vytvořena a odeslána na novak@email.cz</div>
+                        <div class="message-time">14:32</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Jak Majstr funguje?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Napište zprávu</h3>
+                    <p>Pošlete text nebo hlasovku s informacemi o faktuře, nabídce nebo smlouvě.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI zpracuje</h3>
+                    <p>Náš AI asistent vytvoří profesionální dokument podle vašich požadavků.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📧</div>
+                    <h3>Automaticky odešle</h3>
+                    <p>Dokument se automaticky odešle zákazníkovi nebo vám ke schválení.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>2 minuty hotovo</h3>
+                    <p>Celý proces trvá maximálně 2 minuty od odeslání zprávy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Personalizované</h3>
+                    <p>Každý dokument je přizpůsoben vašemu oboru a stylu.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Bezpečné</h3>
+                    <p>Všechna data jsou šifrována a chráněna podle GDPR.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits" id="benefits">
+        <div class="container">
+            <div class="benefits-content">
+                <div class="benefits-text">
+                    <h2>Pro každého řemeslníka</h2>
+                    <ul class="benefits-list">
+                        <li>Žádné složité programy nebo aplikace</li>
+                        <li>Funguje přímo v Telegramu</li>
+                        <li>Hlasové zprávy nebo text</li>
+                        <li>Automatické odesílání zákazníkům</li>
+                        <li>Personalizované šablony pro váš obor</li>
+                        <li>Ukládání historie všech dokumentů</li>
+                    </ul>
+                    <a href="#pricing" class="btn primary">Vyzkoušet zdarma</a>
+                </div>
+                <div class="benefits-image">
+                    <div class="demo-container">
+                        <div class="demo-step">
+                            <div class="demo-icon">🎙️</div>
+                            <div class="demo-text">
+                                <strong>Krok 1:</strong> Řeknete co potřebujete
+                            </div>
+                        </div>
+                        <div class="demo-arrow">↓</div>
+                        <div class="demo-step">
+                            <div class="demo-icon">⚡</div>
+                            <div class="demo-text">
+                                <strong>Krok 2:</strong> AI vytvoří dokument
+                            </div>
+                        </div>
+                        <div class="demo-arrow">↓</div>
+                        <div class="demo-step">
+                            <div class="demo-icon">📧</div>
+                            <div class="demo-text">
+                                <strong>Krok 3:</strong> Odešle zákazníkovi
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Vyberte si plán</h2>
+            <div class="pricing-toggle">
+                <span class="toggle-label">Měsíční</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="pricing-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label">Roční <span class="discount-badge">-20%</span></span>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Základní</h3>
+                    <div class="price">
+                        <span class="price-monthly">99 Kč</span>
+                        <span class="price-yearly" style="display: none;">950 Kč</span>
+                        <span class="price-period"> / měsíc</span>
+                    </div>
+                    <div class="trial-badge">30 dní zdarma</div>
+                    <ul class="pricing-features">
+                        <li>✅ Neomezené faktury</li>
+                        <li>✅ Telegram bot</li>
+                        <li>✅ PDF výstup</li>
+                        <li>✅ Automatické odesílání</li>
+                        <li>✅ Email podpora</li>
+                    </ul>
+                    <a href="#contact" class="pricing-btn">Začít zdarma</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Základní + Moduly</h3>
+                    <div class="price">
+                        <span class="price-monthly">199 Kč</span>
+                        <span class="price-yearly" style="display: none;">1 900 Kč</span>
+                        <span class="price-period"> / měsíc</span>
+                    </div>
+                    <div class="trial-badge">30 dní zdarma</div>
+                    <ul class="pricing-features">
+                        <li>✅ Vše ze Základního</li>
+                        <li>✅ Obchodní nabídky</li>
+                        <li>✅ Nákupní seznamy</li>
+                        <li>✅ Smlouvy (vybraný modul)</li>
+                        <li>✅ Prioritní podpora</li>
+                    </ul>
+                    <a href="#contact" class="pricing-btn">Vybrat plán</a>
+                </div>
+                <div class="pricing-card featured">
+                    <h3>Ultimátní</h3>
+                    <div class="price">
+                        <span class="price-monthly">500 Kč</span>
+                        <span class="price-yearly" style="display: none;">4 800 Kč</span>
+                        <span class="price-period"> / měsíc</span>
+                    </div>
+                    <div class="trial-badge">30 dní zdarma</div>
+                    <ul class="pricing-features">
+                        <li>✅ Všechny funkce</li>
+                        <li>✅ Faktury + Nabídky</li>
+                        <li>✅ Smlouvy + Seznamy</li>
+                        <li>✅ Vlastní šablony</li>
+                        <li>✅ Osobní konzultace</li>
+                        <li>✅ API integrace</li>
+                    </ul>
+                    <a href="#contact" class="pricing-btn">Nejpopulárnější</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-content">
+                <h2>Začněme společně</h2>
+                <p style="font-size: 1.2rem; margin-bottom: 3rem; opacity: 0.9;">
+                    Máte otázky nebo chcete začít? Napište nám a ozveme se vám do 24 hodin.
+                </p>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Jméno</label>
+                        <input type="text" id="name" name="name" placeholder="Vaše jméno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="vas@email.cz" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Zpráva</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Popište své požadavky..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Odeslat zprávu</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Majstr.cz - Všechna práva vyhrazena</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Form submission
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.');
+            this.reset();
+        });
+
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>
