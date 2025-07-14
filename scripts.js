@@ -101,23 +101,25 @@ document.querySelector('.contact-form').addEventListener('submit', function(e) {
     const formData = new FormData(form);
     const messageDiv = document.getElementById('form-message');
 
-    fetch('https://formsubmit.co/ai.auto.masta@gmail.com', {
+    fetch('https://formsubmit.co/your@email.com', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
     })
     .then(response => {
-        if (!response.ok) {
+        if (response.ok) {
+            messageDiv.style.display = 'block';
+            messageDiv.style.color = '#10b981';
+            messageDiv.textContent = 'Děkujeme za vaši zprávu! Ozveme se vám do 24 hodin.';
+            form.reset();
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        } else {
             throw new Error('Chyba při odesílání formuláře');
         }
-        return response.json();
-    })
-    .then(data => {
-        messageDiv.style.display = 'block';
-        messageDiv.textContent = 'Děkujeme za vaši zprávu! Ozveme se vám do 24 hodin.';
-        form.reset();
-        setTimeout(() => {
-            messageDiv.style.display = 'none';
-        }, 5000); // Zpráva zmizí po 5 sekundách
     })
     .catch(error => {
         console.error('Chyba:', error);
