@@ -96,7 +96,7 @@ document.querySelector('.contact-form').addEventListener('submit', function(e) {
     const form = this;
     const formData = new FormData(form);
 
-    fetch('https://formsubmit.co/your@email.com', {
+    fetch('https://formsubmit.co/ai.auto.masta@gmail.com', {
         method: 'POST',
         body: formData
     })
