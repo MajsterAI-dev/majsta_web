@@ -93,8 +93,22 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Form submission
 document.querySelector('.contact-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    alert('Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.');
-    this.reset();
+    const form = this;
+    const formData = new FormData(form);
+
+    fetch('https://formsubmit.co/your@email.com', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.');
+        form.reset();
+    })
+    .catch(error => {
+        console.error('Chyba při odesílání formuláře:', error);
+        alert('Došlo k chybě při odesílání formuláře. Zkuste to znovu.');
+    });
 });
 
 // Add scroll effect to navbar
