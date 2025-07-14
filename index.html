@@ -224,22 +224,25 @@
                 <p style="font-size: 1.2rem; margin-bottom: 3rem; opacity: 0.9;">
                     Máte otázky nebo chcete začít? Napište nám a ozveme se vám do 24 hodin.
                 </p>
-                <form class="contact-form" action="https://formsubmit.co/smolka.ondra@gmail.com" method="POST">
-                    <div class="form-group">
-                        <label for="name">Jméno</label>
-                        <input type="text" id="name" name="name" placeholder="Vaše jméno" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="vas@email.cz" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Zpráva</label>
-                        <textarea id="message" name="message" rows="5" placeholder="Popište své požadavky..." required></textarea>
-                    </div>
-                    <input type="hidden" name="_subject" value="Nová zpráva z kontaktního formuláře Majstr.cz">
-                    <button type="submit" class="submit-btn">Odeslat zprávu</button>
-                </form>
+               <form class="contact-form" action="https://formsubmit.co/your@email.com" method="POST">
+    <div class="form-group">
+        <label for="name">Jméno</label>
+        <input type="text" id="name" name="name" placeholder="Vaše jméno" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="vas@email.cz" required>
+    </div>
+    <div class="form-group">
+        <label for="message">Zpráva</label>
+        <textarea id="message" name="message" rows="5" placeholder="Popište své požadavky..." required></textarea>
+    </div>
+    <input type="hidden" name="_subject" value="Nová zpráva z kontaktního formuláře Majstr.cz">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="">
+    <input type="hidden" name="_autoresponse" value="Děkujeme za vaši zprávu! Ozveme se vám co nejdříve.">
+    <button type="submit" class="submit-btn">Odeslat zprávu</button>
+</form>
             </div>
         </div>
     </section>
