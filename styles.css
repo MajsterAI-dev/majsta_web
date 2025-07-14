@@ -32,10 +32,11 @@ body {
     padding: 0 2rem;
 }
 
-.logo {
+a.logo {
     font-size: 1.5rem;
     font-weight: bold;
     color: #2563eb;
+    text-decoration: none !important;
 }
 
 .nav-links {
@@ -627,9 +628,6 @@ input:checked + .toggle-slider:before {
 .submit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-.logo {
-    text-decoration: none;
 }
 
 /* Footer */
